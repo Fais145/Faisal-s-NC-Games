@@ -30,8 +30,48 @@ describe("/api/categories", () => {
   });
 });
 
+describe('/api/reviews/review_id', () => {
+  describe('METHOD: GET', () => {
+    it('should have a get method that responds with status 200 and a single review based on ID',()=>{
+      return request(app)
+      .get('/api/reviews/3')
+      .expect(200)
+      .then(({body})=>{
+        const {review} = body
+        expect(review).toBeInstanceOf(Object)
+        const reviewKeys = Object.values(review)
+        expect(reviewKeys.length).toBe(9)
+        expect(review.review_id).toBe(3)
+        expect(review).toHaveProperty('title')
+        expect(review).toHaveProperty('category')
+        expect(review).toHaveProperty('designer')
+        expect(review).toHaveProperty('owner')
+        expect(review).toHaveProperty('review_body')
+        expect(review).toHaveProperty('review_img_url')
+          });
+        });
+      it('should respond with a 404 for get requests for review IDs that don\'t exist with msg: \'Invalid ID', () => {
+        return request(app)
+        .get('/api/reviews/50')
+        .expect(404)
+        .then(({body})=>{
+          expect(body.msg).toBe('No review found for review ID 50')
+        })
+      });
+      it('should respond with a 400 and an error message for invalid ID data types (anything but a number)', () => {
+        return request(app)
+        .get('/api/reviews/banana')
+        .expect(400)
+        .then(({body})=>{
+          expect(body.msg).toBe('Invalid ID')
+        })
+      });
+      })
+    })
+ 
+
 describe('/*', () => {
-    it("should handle ALL typos and invalid URLs with a 404 and message 'invalid file path!'",()=>{
+    it("should handle ALL typos and invalid URLs with a 404 and custom error message ",()=>{
     return request(app)
       .get("/api/katagories")
       .expect(404)
