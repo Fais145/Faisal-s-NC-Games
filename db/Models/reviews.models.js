@@ -1,5 +1,5 @@
 const db = require('../connection')
-exports.fetchAllReviews = (ID) => {
+exports.fetchAReview = (ID) => {
 
     return db.query(`SELECT * FROM reviews WHERE review_id = $1;`,[ID]).then((data)=>{
         const review = data.rows[0]

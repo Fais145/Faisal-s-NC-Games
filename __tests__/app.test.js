@@ -30,25 +30,24 @@ describe("/api/categories", () => {
   });
 });
 
-describe('/api/reviews', () => {
+describe('/api/reviews/review_id', () => {
   describe('METHOD: GET', () => {
     it('should have a get method that responds with status 200 and a single review based on ID',()=>{
       return request(app)
       .get('/api/reviews/3')
       .expect(200)
       .then(({body})=>{
-        const {reviews} = body
-        expect(reviews).toBeInstanceOf(Object)
-        const reviewKeys = Object.values(reviews)
+        const {review} = body
+        expect(review).toBeInstanceOf(Object)
+        const reviewKeys = Object.values(review)
         expect(reviewKeys.length).toBe(9)
-        expect(reviews.review_id).toBe(3)
-        expect(reviews).toHaveProperty('title')
-        expect(reviews).toHaveProperty('category')
-        expect(reviews).toHaveProperty('designer')
-        expect(reviews).toHaveProperty('owner')
-        expect(reviews).toHaveProperty('review_body')
-        expect(reviews).toHaveProperty('review_img_url')
-        
+        expect(review.review_id).toBe(3)
+        expect(review).toHaveProperty('title')
+        expect(review).toHaveProperty('category')
+        expect(review).toHaveProperty('designer')
+        expect(review).toHaveProperty('owner')
+        expect(review).toHaveProperty('review_body')
+        expect(review).toHaveProperty('review_img_url')
           });
         });
       it('should respond with a 404 for get requests for review IDs that don\'t exist with msg: \'Invalid ID', () => {

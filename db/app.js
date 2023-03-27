@@ -1,13 +1,13 @@
 const express = require('express')
 const { getAllCategories } = require('./Controllers/categories.controllers');
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
-const { getAllReviews } = require('./Controllers/reviews.controllers');
+const { getAReview } = require('./Controllers/reviews.controllers');
 
 const app = express();
 
 app.get('/api/categories',getAllCategories)
 
-app.get('/api/reviews/:reviewID',getAllReviews)
+app.get('/api/reviews/:reviewID',getAReview)
 
 
 
