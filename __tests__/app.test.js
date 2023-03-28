@@ -98,6 +98,57 @@ describe("/api/reviews/review_id", () => {
   });
 });
 
+describe("/api/reviews/review_id/comments", () => {
+  describe("METHOD: GET", () => {
+    it("should have a get method that responds with status 200 and an array of comments for a review with most recent first", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments).toHaveLength(3);
+          expect(comments).toBeSortedBy('created_at',{descending: true})
+          comments.forEach((comment) => {
+            expect(comment.review_id).toBe(2)
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              review_id: expect.any(Number),
+              created_at: expect.any(String)
+            });
+          });
+        });
+    });
+    it('should respond with a should respond with a 400 and an error message for invalid Review ID data types (anything but a number)', () => {
+      return request(app)
+      .get('/api/reviews/triangle/comments')
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid ID')
+      })
+    });
+    it("should respond with status 404 and an error message for valid Review IDs that don't exist", () => {
+      return request(app)
+        .get("/api/reviews/50/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No comment found for review ID 50");
+        });
+    });
+    it('should return a status 200 and empty comments array for a valid Review ID with no comments', () => {
+      return request(app)
+      .get('/api/reviews/8/comments')
+      .expect(200)
+      .then(({body})=>{
+        expect(body.comments).toEqual([])
+      })
+    });
+  });
+});
+
 describe("/*", () => {
   it("should handle ALL typos and invalid URLs with a 404 and custom error message ", () => {
     return request(app)
