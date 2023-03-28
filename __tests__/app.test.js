@@ -30,6 +30,35 @@ describe("/api/categories", () => {
   });
 });
 
+describe("/api/reviews", () => {
+  describe("METHOD: GET", () => {
+    it("should have a get method that responds with status 200 and an array of reviews", () => {
+      return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at',{descending: true})
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      })
+    });
+  });
+});
+
 describe("/api/reviews/review_id", () => {
   describe("METHOD: GET", () => {
     it("should have a get method that responds with status 200 and a single review based on ID", () => {
@@ -50,7 +79,7 @@ describe("/api/reviews/review_id", () => {
           expect(review).toHaveProperty("review_img_url");
         });
     });
-    it("should respond with status 404 and an error message for valid Review IDs that don't exist", () => {
+    it("should respond with a 404 for get requests for review IDs that don't exist with msg: 'Invalid ID", () => {
       return request(app)
         .get("/api/reviews/50")
         .expect(404)
