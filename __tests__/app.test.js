@@ -147,6 +147,21 @@ describe("/api/reviews/review_id/comments", () => {
       })
     });
   });
+  describe('METHOD: POST', () => {
+    it('should have a post method that takes a comment object and returns the posted comment with status 201', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'bainesface', body: 'very nice stuff!'})
+      .expect(201)
+      .then(({body})=>{
+        expect(body.comment_id).toBe(7)
+        expect(body.review_id).toBe(3)
+        expect(body.author).toBe('bainesface')
+        expect(body.body).toBe('very nice stuff!')
+        expect(body).toHaveProperty('created_at')
+      })
+    });
+  });
 });
 
 describe("/*", () => {

@@ -1,16 +1,19 @@
 const express = require('express')
 const { getAllCategories } = require('./Controllers/categories.controllers');
-const { getCommentsForReview } = require('./Controllers/comments.controllers');
+const { getCommentsForReview, postCommentForReview } = require('./Controllers/comments.controllers');
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
 const { getAReview, getAllReviews } = require('./Controllers/reviews.controllers');
 
 const app = express();
+
+app.use(express.json());
 
 app.get('/api/categories',getAllCategories)
 app.get('/api/reviews', getAllReviews)
 app.get('/api/reviews/:reviewID',getAReview)
 
 app.get('/api/reviews/:reviewID/comments',getCommentsForReview)
+app.post('/api/reviews/:reviewID/comments',postCommentForReview)
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
