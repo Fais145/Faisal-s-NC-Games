@@ -135,7 +135,7 @@ describe("/api/reviews/review_id/comments", () => {
         .get("/api/reviews/50/comments")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("No comment found for review ID 50");
+          expect(body.msg).toBe("review ID 50 does not exist");
         });
     });
     it('should return a status 200 and empty comments array for a valid Review ID with no comments', () => {
@@ -159,6 +159,24 @@ describe("/api/reviews/review_id/comments", () => {
         expect(body.author).toBe('bainesface')
         expect(body.body).toBe('very nice stuff!')
         expect(body).toHaveProperty('created_at')
+      })
+    });
+    it('should respond with a 404 status and an error message for all review IDs that don\'t exist', () => {
+      return request(app)
+      .post('/api/reviews/100/comments')
+      .send({username: 'bainesface', body: 'very nice stuff!'})
+      .expect(404)
+      .then(({body})=>{
+          expect(body.msg).toBe('Review ID does not exist')
+      })
+    });
+    it('should respond with a 400 status and an error message for invalid comment keys', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'sugar', body: 'very nice stuff!'})
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid key')
       })
     });
   });
