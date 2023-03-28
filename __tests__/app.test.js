@@ -81,6 +81,7 @@ describe("/api/reviews/review_id/comments", () => {
           expect(comments).toHaveLength(3);
           expect(comments).toBeSortedBy('created_at',{descending: true})
           comments.forEach((comment) => {
+            expect(comment.review_id).toBe(2)
             expect(comment).toMatchObject({
               comment_id: expect.any(Number),
               body: expect.any(String),
