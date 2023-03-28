@@ -1,4 +1,4 @@
-module.exports = [
+  module.exports = [
   {
     title: 'Agricola',
     designer: 'Uwe Rosenberg',

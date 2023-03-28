@@ -1,5 +1,6 @@
 const express = require('express')
 const { getAllCategories } = require('./Controllers/categories.controllers');
+const { getCommentsForReview } = require('./Controllers/comments.controllers');
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
 const { getAReview } = require('./Controllers/reviews.controllers');
 
@@ -9,7 +10,7 @@ app.get('/api/categories',getAllCategories)
 
 app.get('/api/reviews/:reviewID',getAReview)
 
-
+app.get('/api/reviews/:reviewID/comments',getCommentsForReview)
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
