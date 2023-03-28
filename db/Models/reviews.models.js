@@ -1,4 +1,5 @@
 const db = require('../connection')
+
 exports.fetchAReview = (ID) => {
 
     return db.query(`SELECT * FROM reviews WHERE review_id = $1;`,[ID]).then((data)=>{
@@ -12,3 +13,5 @@ exports.fetchAReview = (ID) => {
         return data.rows[0]
     })
 }
+
+

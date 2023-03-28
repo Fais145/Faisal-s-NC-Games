@@ -108,6 +108,14 @@ describe("/api/reviews/review_id/comments", () => {
           expect(body.msg).toBe("No comment found for review ID 50");
         });
     });
+    it('should return a status 200 and empty comments array for a valid Review ID with no comments', () => {
+      return request(app)
+      .get('/api/reviews/8/comments')
+      .expect(200)
+      .then(({body})=>{
+        expect(body.comments).toEqual([])
+      })
+    });
   });
 });
 
