@@ -23,6 +23,11 @@ exports.fetchAReview = (ID) => {
     })
 }
 
-
+exports.updateReview = (ID, votes) => { 
+    return db.query(`UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING*;`,[votes,ID])
+    .then(({rows})=>{
+        console.log(rows)
+    })
+}
 
 

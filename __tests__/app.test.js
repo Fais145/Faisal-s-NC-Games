@@ -96,6 +96,27 @@ describe("/api/reviews/review_id", () => {
         });
     });
   });
+  describe.skip('METHOD: PATCH', () => {
+    it('should have a patch method for review votes that returns a status 200 and an updated review when given votes', () => {
+      return request(app)
+      .patch('/api/reviews/2')
+      .send({votes: 2})
+      .expect(200)
+      .then(({body})=>{
+        const {review} = body
+        expect(Object.keys(review).length).toBe(9)
+        expect(review.review_id).toBe(2)
+        expect(review.title).toBe('Jenga')
+        expect(review.designer).toBe('Leslie Scott')
+        expect(review.owner).toBe('philippaclaire9')
+        expect(review.review_img_url).toBe('https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700')
+        expect(review.review_body).toBe('Fiddly fun for all the family')
+        expect(review.category).toBe('dexterity')
+        expect(typeof review.created_at).toBe(String)
+        expect(review.votes).toBe(7)
+      })
+    });
+  });
 });
 
 describe("/api/reviews/review_id/comments", () => {
