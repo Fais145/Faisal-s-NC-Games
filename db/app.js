@@ -10,7 +10,7 @@ app.use(express.json());
 app.get('/api/categories',getAllCategories)
 app.get('/api/reviews', getAllReviews)
 app.get('/api/reviews/:reviewID',getAReview)
-app.patch('/api/reviews/:reviewID',patchAReview )
+
 
 app.get('/api/reviews/:reviewID/comments',getCommentsForReview)
 
