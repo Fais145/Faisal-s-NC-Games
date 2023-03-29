@@ -1,4 +1,4 @@
-const { fetchAllReviews } = require("../Models/reviews.models")
+const { fetchAllReviews, updatingAReview } = require("../Models/reviews.models")
 const { fetchAReview } = require("../Models/reviews.models")
 
 exports.getAllReviews = (req,res,next) => {
@@ -15,4 +15,10 @@ exports.getAReview = (req,res, next) => {
     .catch((err)=>{
         next(err)
     })
+}
+
+exports.patchAReview = (req, res,next) => {
+    const {reviewID} = req.params
+    const {inc_votes} = req.body
+    updatingAReview(reviewID,inc_votes)
 }

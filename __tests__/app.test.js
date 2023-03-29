@@ -96,6 +96,26 @@ describe("/api/reviews/review_id", () => {
         });
     });
   });
+  describe.skip('MtETHOD: PATCH', () => {
+    it('should have a patch method for review votes that returns a status 200 and an updated review when given votes', () => {
+      return request(app)
+      .patch('/api/reviews/2')
+      .send({inc_votes: 2})
+      .expect(200)
+      .then(({body})=>{
+        expect(Object.keys(body).length).toBe(9)
+        expect(body.review_id).toBe(2)
+        expect(body.title).toBe('Jenga')
+        expect(body.designer).toBe('Leslie Scott')
+        expect(body.owner).toBe
+        expect(body.review_img_url).toBe
+        expect(body.review_body).toBe
+        expect(body.category).toBe
+        expect(typeof body.created_at).toBe(String)
+        expect(body.votes).toBe(7)
+      })
+    });
+  });
 });
 
 describe("/api/reviews/review_id/comments", () => {
