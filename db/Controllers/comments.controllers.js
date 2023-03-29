@@ -1,4 +1,4 @@
-const { fetchCommentsByReview, checkReviewExists } = require("../Models/comments.models");
+const { fetchCommentsByReview, checkReviewExists, fetchCommentForPost } = require("../Models/comments.models");
 
 exports.getCommentsForReview = (req, res, next) => {
   const { reviewID } = req.params;
@@ -13,3 +13,17 @@ exports.getCommentsForReview = (req, res, next) => {
       next(err);
     });
 };
+
+
+exports.postCommentForReview = (req, res, next) => {
+  const {reviewID} = req.params
+  const {body} = req
+
+  // const commentPromises = [fetchCommentForPost(reviewID,body),checkReviewExists(reviewID)]
+
+  fetchCommentForPost(reviewID, body).then(([comment])=>{
+    res.status(201).send({comment})
+  }).catch((err)=>{
+    next(err)
+  })
+}
