@@ -135,7 +135,7 @@ describe("/api/reviews/review_id/comments", () => {
         .get("/api/reviews/50/comments")
         .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("No comment found for review ID 50");
+          expect(body.msg).toBe("review ID 50 does not exist");
         });
     });
     it('should return a status 200 and empty comments array for a valid Review ID with no comments', () => {
@@ -144,6 +144,71 @@ describe("/api/reviews/review_id/comments", () => {
       .expect(200)
       .then(({body})=>{
         expect(body.comments).toEqual([])
+      })
+    });
+  });
+  describe('METHOD: POST', () => {
+    it('should have a post method that takes a comment object and returns the posted comment with status 201', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'bainesface', body: 'very nice stuff!'})
+      .expect(201)
+      .then(({body})=>{
+        const {comment} = body
+        expect(comment.comment_id).toBe(7)
+        expect(comment.review_id).toBe(3)
+        expect(comment.author).toBe('bainesface')
+        expect(comment.body).toBe('very nice stuff!')
+        expect(comment).toHaveProperty('created_at')
+      })
+    });it('should ignore extra comment properties and return a comment with status 201', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'bainesface', body:'very nice stuff!', size: 'medium'})
+      .expect(201)
+      .then(({body})=>{
+        const {comment} = body
+        expect(comment.comment_id).toBe(7)
+        expect(comment.review_id).toBe(3)
+        expect(comment.author).toBe('bainesface')
+        expect(comment.body).toBe('very nice stuff!')
+        expect(comment).toHaveProperty('created_at')
+      })
+    });
+    it('should respond with a 404 status and an error message for all review IDs that don\'t exist', () => {
+      return request(app)
+      .post('/api/reviews/100/comments')
+      .send({username: 'bainesface', body: 'very nice stuff!'})
+      .expect(404)
+      .then(({body})=>{
+          expect(body.msg).toBe('Review ID does not exist')
+      })
+    });
+    it('should respond with status 400 and an error message for invalid Review IDS', () => {
+      return request(app)
+      .post('/api/reviews/triangle/comments')
+      .send({username: 'bainesface', body: 'very nice stuff!'})
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid ID')
+      })
+    });
+    it('should respond with a 404 status and an error message for an invalid username', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'sugar', body: 'very nice stuff!'})
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid username')
+      })
+    });
+    it('should respond with a 400 bad request for missing required comment properties', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'bainesface'})
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Incomplete body')
       })
     });
   });
