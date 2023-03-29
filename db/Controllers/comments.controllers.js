@@ -22,7 +22,7 @@ exports.postCommentForReview = (req, res, next) => {
   // const commentPromises = [fetchCommentForPost(reviewID,body),checkReviewExists(reviewID)]
 
   fetchCommentForPost(reviewID, body).then(([comment])=>{
-    res.status(201).send(comment)
+    res.status(201).send({comment})
   }).catch((err)=>{
     next(err)
   })

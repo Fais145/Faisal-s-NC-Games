@@ -154,11 +154,12 @@ describe("/api/reviews/review_id/comments", () => {
       .send({username: 'bainesface', body: 'very nice stuff!'})
       .expect(201)
       .then(({body})=>{
-        expect(body.comment_id).toBe(7)
-        expect(body.review_id).toBe(3)
-        expect(body.author).toBe('bainesface')
-        expect(body.body).toBe('very nice stuff!')
-        expect(body).toHaveProperty('created_at')
+        const {comment} = body
+        expect(comment.comment_id).toBe(7)
+        expect(comment.review_id).toBe(3)
+        expect(comment.author).toBe('bainesface')
+        expect(comment.body).toBe('very nice stuff!')
+        expect(comment).toHaveProperty('created_at')
       })
     });
     it('should respond with a 404 status and an error message for all review IDs that don\'t exist', () => {
@@ -170,13 +171,22 @@ describe("/api/reviews/review_id/comments", () => {
           expect(body.msg).toBe('Review ID does not exist')
       })
     });
-    it('should respond with a 400 status and an error message for invalid comment keys', () => {
+    it('should respond with a 404 status and an error message for invalid comment keys', () => {
       return request(app)
       .post('/api/reviews/3/comments')
       .send({username: 'sugar', body: 'very nice stuff!'})
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid username')
+      })
+    });
+    it('should respond with a 400 bad request for missing comment properties', () => {
+      return request(app)
+      .post('/api/reviews/3/comments')
+      .send({username: 'bainesface'})
       .expect(400)
       .then(({body})=>{
-        expect(body.msg).toBe('Invalid key')
+        expect(body.msg).toBe('Incomplete body')
       })
     });
   });
