@@ -1,6 +1,6 @@
 const express = require('express')
 const { getAllCategories } = require('./Controllers/categories.controllers');
-const { getCommentsForReview, postCommentForReview } = require('./Controllers/comments.controllers');
+const { getCommentsForReview, postCommentForReview, deleteComment } = require('./Controllers/comments.controllers');
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
 const { getAReview, getAllReviews, patchAReview } = require('./Controllers/reviews.controllers');
 
@@ -17,6 +17,8 @@ app.patch('/api/reviews/:reviewID',patchAReview)
 
 app.get('/api/reviews/:reviewID/comments',getCommentsForReview)
 app.post('/api/reviews/:reviewID/comments',postCommentForReview)
+
+app.delete('/api/comments/:commentID', deleteComment )
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
