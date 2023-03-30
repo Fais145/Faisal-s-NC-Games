@@ -327,6 +327,27 @@ describe('/api/comments/:commentID', () => {
   });
 });
 
+describe('/api/users', () => {
+  describe('METHOD: GET', () => {
+    it('should have a get method that returns status code 200 and an array of users', () => {
+      return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({body})=>{
+        const {users} = body
+        expect(users).toHaveLength(4)
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String)
+          });
+      })
+    });
+  });
+});
+});
+
 describe("/*", () => {
   it("should handle ALL typos and invalid URLs with a 404 and custom error message ", () => {
     return request(app)
