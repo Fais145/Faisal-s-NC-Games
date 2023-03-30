@@ -301,6 +301,32 @@ describe("/api/reviews/review_id/comments", () => {
   });
 });
 
+describe('/api/comments/:commentID', () => {
+  describe('METHOD: DELETE', () => {
+    it('should delete the relevant comment and respond with status 204 and no content', () => {
+      return request(app)
+      .delete('/api/comments/1')
+      .expect(204)
+    });
+    it('should respond with status 404 and an error message for valid comment IDs that don\'t exist', () => {
+      return request(app)
+      .delete('/api/comments/42')
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Comment ID 42 does not exist')
+      })
+    });
+    it('should respond with a 400 and an error message for invalid comment ID data types (anything but a number)', () => {
+      return request(app)
+      .delete('/api/comments/sword')
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid ID')
+      })
+    });
+  });
+});
+
 describe("/*", () => {
   it("should handle ALL typos and invalid URLs with a 404 and custom error message ", () => {
     return request(app)

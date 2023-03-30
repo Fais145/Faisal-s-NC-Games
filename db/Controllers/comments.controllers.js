@@ -1,4 +1,6 @@
-const { fetchCommentsByReview, checkReviewExists, fetchCommentForPost } = require("../Models/comments.models");
+const { fetchCommentsByReview, fetchCommentForPost, deletingComment, checkCommentExists } = require("../Models/comments.models");
+const { checkReviewExists } = require("../Models/reviews.models");
+
 
 exports.getCommentsForReview = (req, res, next) => {
   const { reviewID } = req.params;
@@ -14,7 +16,6 @@ exports.getCommentsForReview = (req, res, next) => {
     });
 };
 
-
 exports.postCommentForReview = (req, res, next) => {
   const {reviewID} = req.params
   const {body} = req
@@ -24,4 +25,16 @@ exports.postCommentForReview = (req, res, next) => {
   }).catch((err)=>{
     next(err)
   })
+}
+
+exports.deleteComment = (req, res, next) => {
+  const {commentID} = req.params
+
+  const commentPromises = [deletingComment(commentID),checkCommentExists(commentID)];
+
+  Promise.all(commentPromises).then(()=>{
+    res.status(204).send()
+  }).catch((err)=>{
+    next(err)
+  }) 
 }

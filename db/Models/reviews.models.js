@@ -40,3 +40,17 @@ exports.updateReview = (ID, votes) => {
       return rows;
     });
 };
+
+exports.checkReviewExists = (ID) => {
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [ID])
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject({
+            status: 404,
+            msg: `review ID ${ID} does not exist`,
+          });
+      }
+    });
+};
+
