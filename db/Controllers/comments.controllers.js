@@ -19,8 +19,6 @@ exports.postCommentForReview = (req, res, next) => {
   const {reviewID} = req.params
   const {body} = req
 
-  // const commentPromises = [fetchCommentForPost(reviewID,body),checkReviewExists(reviewID)]
-
   fetchCommentForPost(reviewID, body).then(([comment])=>{
     res.status(201).send({comment})
   }).catch((err)=>{
