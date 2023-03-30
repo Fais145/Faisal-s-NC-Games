@@ -7,6 +7,8 @@ exports.handleCustomErrors = (err, req, res, next) => {
 exports.handlePSQLErrors = (err, req, res, next) => {
     if (err.code === '22P02') {
         res.status(400).send({ msg: 'Invalid ID' });
+      } else if (err.code === '23502' && err.column === 'votes'){
+        res.status(400).send({msg: 'No votes found'})
       } else if (err.code === '23502') {
         res.status(400).send({msg: 'Incomplete body'})  
       } else if (err.code === '23503' && err.constraint === 'comments_review_id_fkey' ){

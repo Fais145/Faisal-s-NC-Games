@@ -96,11 +96,11 @@ describe("/api/reviews/review_id", () => {
         });
     });
   });
-  describe.skip('METHOD: PATCH', () => {
+  describe('METHOD: PATCH', () => {
     it('should have a patch method for review votes that returns a status 200 and an updated review when given votes', () => {
       return request(app)
       .patch('/api/reviews/2')
-      .send({votes: 2})
+      .send({inc_votes: 2})
       .expect(200)
       .then(({body})=>{
         const {review} = body
@@ -112,8 +112,74 @@ describe("/api/reviews/review_id", () => {
         expect(review.review_img_url).toBe('https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700')
         expect(review.review_body).toBe('Fiddly fun for all the family')
         expect(review.category).toBe('dexterity')
-        expect(typeof review.created_at).toBe(String)
         expect(review.votes).toBe(7)
+        expect(review).toHaveProperty('created_at')
+      })
+    });
+    it('should ignore extra vote proprties and return status 200 with an updated review', () => {
+      return request(app)
+      .patch('/api/reviews/2')
+      .send({inc_votes: 2,
+            shape: 'square'})
+      .expect(200)
+      .then(({body})=>{
+        const {review} = body
+        expect(Object.keys(review).length).toBe(9)
+        expect(review.review_id).toBe(2)
+        expect(review.title).toBe('Jenga')
+        expect(review.designer).toBe('Leslie Scott')
+        expect(review.owner).toBe('philippaclaire9')
+        expect(review.review_img_url).toBe('https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700')
+        expect(review.review_body).toBe('Fiddly fun for all the family')
+        expect(review.category).toBe('dexterity')
+        expect(review.votes).toBe(7)
+        expect(review).toHaveProperty('created_at')
+      })
+    });
+    it('should have a review votes key that does not go below 0', () => {
+      return request(app)
+      .patch('/api/reviews/2')
+      .send({inc_votes: -6})
+      .expect(200)
+      .then(({body})=>{
+        const {review} = body
+        expect(Object.keys(review).length).toBe(9)
+        expect(review.review_id).toBe(2)
+        expect(review.title).toBe('Jenga')
+        expect(review.designer).toBe('Leslie Scott')
+        expect(review.owner).toBe('philippaclaire9')
+        expect(review.review_img_url).toBe('https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700')
+        expect(review.review_body).toBe('Fiddly fun for all the family')
+        expect(review.category).toBe('dexterity')
+        expect(review.votes).toBe(0) //not -1!
+        expect(review).toHaveProperty('created_at')
+      })
+    });
+    it('should return a 404 not found and err message for valid review IDs that don\'t exist', () => {
+      return request(app)
+      .patch('/api/reviews/46')
+      .send({inc_votes: 2})
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Review ID does not exist')
+      })
+    });
+    it('should respond with status 400 and an error message for invalid Review IDS', () => {
+      return request(app)
+      .patch('/api/reviews/cool')
+      .send({inc_votes: 3})
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid ID')
+      })
+    });
+    it('should respond with status 400 and an error message for no vote property', () => {
+      return request(app)
+      .patch('/api/reviews/2')
+      .send({price: 1, pet: 'cat'})
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('No votes found')
       })
     });
   });
