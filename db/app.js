@@ -26,4 +26,4 @@ app.all("*", (req, res) => {
     res.status(404).send({ msg: "Invalid file path!" });
   });
 
-module.exports = {app};
+module.exports = app;
