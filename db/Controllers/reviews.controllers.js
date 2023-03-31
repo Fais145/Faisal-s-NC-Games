@@ -6,16 +6,20 @@ const {
 } = require("../Models/reviews.models");
 const { fetchAReview } = require("../Models/reviews.models");
 
-
 exports.getAllReviews = (req, res, next) => {
-  const {category} = req.query;
-  const reviewPromises = [fetchAllReviews(category),checkCategoryExits(category)] 
+  const { category, sort_by, order } = req.query;
+  const reviewPromises = [
+    fetchAllReviews(category, sort_by, order),
+    checkCategoryExits(category),
+  ];
 
-  Promise.all(reviewPromises).then(([reviews]) => {
-    res.status(200).send({ reviews });
-  }).catch((err)=>{
-    next(err)
-  })
+  Promise.all(reviewPromises)
+    .then(([reviews]) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getAReview = (req, res, next) => {

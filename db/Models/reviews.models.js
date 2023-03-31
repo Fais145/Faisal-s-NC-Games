@@ -1,7 +1,19 @@
 const db = require("../connection");
 
-exports.fetchAllReviews = (category) => {
+exports.fetchAllReviews = (category,sort,order) => {
+  if(!sort) sort = 'created_at'
+  if(!order) order = 'desc'
 
+  const reviewColumns = ['owner','title','designer','review_img_url','category','created_at','votes','review_id','comment_count']
+
+  if(!reviewColumns.includes(sort)){
+    return Promise.reject({status:400,msg:'Invalid sort query'})
+  }
+
+  if(!['asc','desc'].includes(order)){
+    return Promise.reject({status:400,msg:'Invalid order query'})
+  }
+  
   let dbQueryStr = ''
   let dbParamArr = []
 
@@ -13,7 +25,7 @@ if(category){
     .query(
       `SELECT reviews.review_id, owner, title, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id ` +dbQueryStr+
     ` GROUP BY reviews.review_id 
-    ORDER BY reviews.created_at DESC;`,dbParamArr
+    ORDER BY reviews.${sort} ${order};`,dbParamArr
     )
     .then(({ rows }) => {
       return rows;
