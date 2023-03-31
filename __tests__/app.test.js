@@ -56,6 +56,159 @@ describe("/api/reviews", () => {
         });
       })
     });
+    it('should have a category query that responds with status 200 and reviews of games from that category ', () => {
+      return request(app)
+      .get('/api/reviews?category=dexterity')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews.length).toBe(1)
+        expect(reviews).toBeInstanceOf(Array)
+        reviews.forEach((review)=>{
+          expect(review.category).toBe('dexterity')
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          })
+        })
+      })
+    });
+    it('should return a 404 status and error message if category does not exist', () => {
+      return request(app)
+      .get('/api/reviews?category=shark123')
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Category shark123 does not exist')
+      })
+    });
+    it('should return status 200 and an empty array for a category that exists with no reviews', () => {
+      return request(app)
+      .get(`/api/reviews?category=children\'s+games`)
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toEqual([])
+      })
+    });
+    it('should have a sort by query that responds with status 200 and an array of reviews sorted by specified column', () => {
+      return request(app)
+      .get('/api/reviews?sort_by=designer')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toHaveLength(13)
+        expect(reviews).toBeInstanceOf(Array)
+        expect(reviews).toBeSortedBy('designer',{descending:true})
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      })
+    });
+    it('should have a sort by query that defauls to created_at', () => {
+      return request(app)
+      .get('/api/reviews?sort_by')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at',{descending: true})
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      }) 
+    });
+    it('should only accept sort by queries for columns in the reviews table', () => {
+      return request(app)
+      .get('/api/reviews?sort_by=5')
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid sort query')
+      })
+    });
+    it('should have an order query that sorts by ascending or descending', () => {
+      return request(app)
+      .get('/api/reviews?order=asc')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at',{descending:false})
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      }) 
+    });
+    it('should have an order query that defaults to descending', () => {
+      return request(app)
+      .get('/api/reviews?order')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at',{descending:true})
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      }) 
+    });
+    it('should only accept asc or desc order queries', () => {
+      return request(app)
+      .get('/api/reviews?order=triangle')
+      .expect(400)
+      .then(({body})=>{
+        expect(body.msg).toBe('Invalid order query')
+      })
+    });
   });
 });
 

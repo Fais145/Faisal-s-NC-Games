@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const {getApiInstructions } = require('./Controllers/api.controllers');
 const { getAllCategories } = require('./Controllers/categories.controllers');
 const { getCommentsForReview, postCommentForReview, deleteComment } = require('./Controllers/comments.controllers');
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
@@ -10,8 +11,8 @@ app.use(express.json());
 
 app.use(express.json());
 
+app.get('/api', getApiInstructions)
 app.get('/api/categories',getAllCategories)
-
 app.get('/api/reviews', getAllReviews)
 
 app.get('/api/reviews/:reviewID',getAReview)
