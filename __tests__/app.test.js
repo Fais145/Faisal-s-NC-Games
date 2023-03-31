@@ -30,7 +30,7 @@ describe("/api/categories", () => {
   });
 });
 
-describe.only("/api/reviews", () => {
+describe("/api/reviews", () => {
   describe("METHOD: GET", () => {
     it("should have a get method that responds with status 200 and an array of reviews", () => {
       return request(app)
