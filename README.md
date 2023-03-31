@@ -22,7 +22,7 @@ To install all required dependencies please run 'npm install' so you can downloa
 Next you'll need to create a .env.test & .env.development file and set your PGDATABASE variables to the corresponding databases
 eg. for .env.test --> PGDATABASE=nc_games_test   
 
-Lastly, npm run seed in your terminal to create your own databases to play with.
+Lastly, npm run setup-dbs & npm run seed in your terminal to create your own databases to play with.
 
 **This repo requires a minimum node v19.6.0 and postgres v8.7.3
 
