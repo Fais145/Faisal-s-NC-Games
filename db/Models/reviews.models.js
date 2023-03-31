@@ -34,7 +34,8 @@ if(category){
 
 exports.fetchAReview = (ID) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [ID])
+    .query(`SELECT reviews.title,reviews.review_id,reviews.review_body, reviews.votes,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url, reviews.created_at, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;`, [ID])
     .then((data) => {
       const review = data.rows[0];
       if (!review) {
