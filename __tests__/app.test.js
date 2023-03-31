@@ -65,6 +65,7 @@ describe("/api/reviews", () => {
         expect(reviews.length).toBe(1)
         expect(reviews).toBeInstanceOf(Array)
         reviews.forEach((review)=>{
+          expect(review.category).toBe('dexterity')
           expect(review).toMatchObject({
             owner: expect.any(String),
             title: expect.any(String),
@@ -160,7 +161,7 @@ describe("/api/reviews", () => {
         const {reviews} = body
         expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(13);
-        expect(reviews).toBeSortedBy('created_at')
+        expect(reviews).toBeSortedBy('created_at',{descending:false})
         reviews.forEach((review) => {
           expect(review).toMatchObject({
             owner: expect.any(String),
