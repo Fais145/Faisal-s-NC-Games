@@ -30,7 +30,7 @@ describe("/api/categories", () => {
   });
 });
 
-describe("/api/reviews", () => {
+describe.only("/api/reviews", () => {
   describe("METHOD: GET", () => {
     it("should have a get method that responds with status 200 and an array of reviews", () => {
       return request(app)
@@ -54,6 +54,47 @@ describe("/api/reviews", () => {
             comment_count: expect.any(String),
           });
         });
+      })
+    });
+    it('should have a category query that responds with status 200 and reviews of games from that category ', () => {
+      return request(app)
+      .get('/api/reviews?category=dexterity')
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews.length).toBe(1)
+        expect(reviews).toBeInstanceOf(Array)
+        reviews.forEach((review)=>{
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            review_id: expect.any(Number),
+            comment_count: expect.any(String),
+          })
+        })
+      })
+    });
+    it('should return a 404 status and error message if category does not exist', () => {
+      return request(app)
+      .get('/api/reviews?category=shark123')
+      .expect(404)
+      .then(({body})=>{
+        expect(body.msg).toBe('Category shark123 does not exist')
+      })
+    });
+    it('should return status 200 and an empty array for a category that exists with no reviews', () => {
+      const category = 'children\'s games'
+      return request(app)
+      .get(`/api/reviews?category=${category}`)
+      .expect(200)
+      .then(({body})=>{
+        const {reviews} = body
+        expect(reviews).toEqual([])
       })
     });
   });

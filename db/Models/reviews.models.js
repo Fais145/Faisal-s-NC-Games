@@ -1,11 +1,19 @@
 const db = require("../connection");
 
-exports.fetchAllReviews = () => {
+exports.fetchAllReviews = (category) => {
+
+  let dbQueryStr = ''
+  let dbParamArr = []
+
+if(category){
+ dbQueryStr = 'WHERE category = $1'
+ dbParamArr.push(category)
+}
   return db
     .query(
-      `SELECT reviews.review_id, owner, title, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id
-    GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC; `
+      `SELECT reviews.review_id, owner, title, designer, review_img_url, category, reviews.created_at, reviews.votes, COUNT(comments.comment_id) AS comment_count FROM reviews LEFT JOIN comments ON reviews.review_id = comments.review_id ` +dbQueryStr+
+    ` GROUP BY reviews.review_id 
+    ORDER BY reviews.created_at DESC;`,dbParamArr
     )
     .then(({ rows }) => {
       return rows;

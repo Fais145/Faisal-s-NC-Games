@@ -1,3 +1,4 @@
+const { checkCategoryExits } = require("../Models/categories.models");
 const {
   fetchAllReviews,
   updatingAReview,
@@ -5,10 +6,16 @@ const {
 } = require("../Models/reviews.models");
 const { fetchAReview } = require("../Models/reviews.models");
 
+
 exports.getAllReviews = (req, res, next) => {
-  fetchAllReviews().then((reviews) => {
+  const {category} = req.query;
+  const reviewPromises = [fetchAllReviews(category),checkCategoryExits(category)] 
+
+  Promise.all(reviewPromises).then(([reviews]) => {
     res.status(200).send({ reviews });
-  });
+  }).catch((err)=>{
+    next(err)
+  })
 };
 
 exports.getAReview = (req, res, next) => {
