@@ -2,7 +2,6 @@ const request = require("supertest");
 const app  = require("../db/app");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
-const { fetchApiInstructions } = require("../db/Models/api.models");
 const seed = require("../db/seeds/seed");
 
 beforeEach(() => seed(testData));
