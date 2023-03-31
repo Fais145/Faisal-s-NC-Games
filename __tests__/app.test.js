@@ -69,7 +69,7 @@ describe("/api/reviews/review_id", () => {
           const { review } = body;
           expect(review).toBeInstanceOf(Object);
           const reviewKeys = Object.values(review);
-          expect(reviewKeys.length).toBe(9);
+          expect(reviewKeys.length).toBe(10);
           expect(review.review_id).toBe(3);
           expect(review).toHaveProperty("title");
           expect(review).toHaveProperty("category");
@@ -77,6 +77,8 @@ describe("/api/reviews/review_id", () => {
           expect(review).toHaveProperty("owner");
           expect(review).toHaveProperty("review_body");
           expect(review).toHaveProperty("review_img_url");
+          expect(review).toHaveProperty("votes");
+          expect(review).toHaveProperty("created_at");
         });
     });
     it("should respond with a 404 for get requests for review IDs that don't exist with msg: 'Invalid ID", () => {
@@ -95,7 +97,27 @@ describe("/api/reviews/review_id", () => {
           expect(body.msg).toBe("Invalid ID");
         });
     });
+    it('should include a comment count for the review', () => {
+      return request(app)
+      .get('/api/reviews/2')
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toBeInstanceOf(Object);
+        const reviewKeys = Object.values(review);
+        expect(reviewKeys.length).toBe(10);
+        expect(review.review_id).toBe(2);
+        expect(review).toHaveProperty("title");
+        expect(review).toHaveProperty("category");
+        expect(review).toHaveProperty("designer");
+        expect(review).toHaveProperty("owner");
+        expect(review).toHaveProperty("review_body");
+        expect(review).toHaveProperty("review_img_url");
+        expect(review.comment_count).toBe('3')
+      });
+    });
   });
+  
   describe('METHOD: PATCH', () => {
     it('should have a patch method for review votes that returns a status 200 and an updated review when given votes', () => {
       return request(app)
