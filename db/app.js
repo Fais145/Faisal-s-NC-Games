@@ -9,8 +9,6 @@ const { getAllUsers } = require('./Controllers/users.controllers');
 const app = express();
 app.use(express.json());
 
-app.use(express.json());
-
 app.get('/api', getApiInstructions)
 app.get('/api/categories',getAllCategories)
 app.get('/api/reviews', getAllReviews)
