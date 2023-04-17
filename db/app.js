@@ -5,8 +5,11 @@ const { getCommentsForReview, postCommentForReview, deleteComment } = require('.
 const { handleCustomErrors, handlePSQLErrors, handleServerErrors } = require('./Controllers/errors.controllers');
 const { getAReview, getAllReviews, patchAReview } = require('./Controllers/reviews.controllers');
 const { getAllUsers } = require('./Controllers/users.controllers');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 app.get('/api', getApiInstructions)
