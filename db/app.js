@@ -9,8 +9,8 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors())
 
 app.get('/api', getApiInstructions)
 app.get('/api/categories',getAllCategories)
