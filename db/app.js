@@ -11,8 +11,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors())
-const corsOptions = {origin: 'https://localhost:3000',
-                    optionsSuccessStatus: 200 }
+// const corsOptions = {origin: 'https://localhost:3000',
+//                     optionsSuccessStatus: 200 }
 
 app.get('/api', getApiInstructions)
 app.get('/api/categories',getAllCategories)
@@ -26,7 +26,7 @@ app.post('/api/reviews/:reviewID/comments',postCommentForReview)
 app.delete('/api/comments/:commentID', deleteComment )
 
 app.get('/api/users', getAllUsers)
-app.get('/api/reviews',cors(corsOptions),getAllReviews)
+app.get('/api/reviews',getAllReviews)
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
