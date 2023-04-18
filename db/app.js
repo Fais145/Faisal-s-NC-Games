@@ -14,7 +14,6 @@ app.use(cors())
 
 app.get('/api', getApiInstructions)
 app.get('/api/categories',getAllCategories)
-app.get('/api/reviews', cors(),getAllReviews)
 
 app.get('/api/reviews/:reviewID',getAReview)
 app.patch('/api/reviews/:reviewID',patchAReview)
@@ -25,6 +24,7 @@ app.post('/api/reviews/:reviewID/comments',postCommentForReview)
 app.delete('/api/comments/:commentID', deleteComment )
 
 app.get('/api/users', getAllUsers)
+app.get('/api/reviews',getAllReviews)
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
